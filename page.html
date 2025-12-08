@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ChatBot OGE UNASAM</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background: #e8eaed;
+        }
+        header {
+            background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
+            min-height: 100vh;
+            height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        nav {
+            background: rgba(26, 58, 82, 0.95);
+            padding: 1.2rem 0;
+            border-bottom: 3px solid #e74c3c;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .contenedor {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 90%;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            height: 60px;
+            width: auto;
+        }
+        .enlaces-header {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .enlaces-header a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+        .enlaces-header a:hover {
+            color: #e74c3c;
+        }
+        .hamburguer {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .contenido-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            flex: 1;
+            padding: 2rem 0;
+            overflow: hidden;
+        }
+        .textos-header {
+            flex: 1;
+            color: white;
+            overflow: hidden;
+        }
+        .textos-header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+        .textos-header p {
+            font-size: 1rem;
+            margin-bottom: 1.8rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .textos-header a {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 0.9rem 2.8rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .textos-header a:hover {
+            transform: translateY(-3px);
+            background: #c0392b;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+        .contenido-header img {
+            flex: 1;
+            max-width: 100%;
+            height: auto;
+            max-height: 60vh;
+            object-fit: contain;
+        }
+        .about-us {
+            padding: 5rem 0;
+            background: #e8eaed;
+        }
+        .contenedor1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 90%;
+        }
+        .titulo {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+            color: #1a3a52;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        .titulo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #e74c3c;
+        }
+        .contenedor-articulo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .articulo {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s, border-top 0.3s;
+            border-top: 4px solid #e74c3c;
+        }
+        .articulo:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            border-top-color: #1a3a52;
+        }
+        .articulo i {
+            font-size: 3.5rem;
+            color: #e74c3c;
+            margin-bottom: 1.5rem;
+        }
+        .articulo h3 {
+            color: #1a3a52;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .articulo p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .articulo a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        .articulo a:hover {
+            color: #1a3a52;
+        }
+        .questions {
+            padding: 5rem 0;
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            background: white;
+        }
+        .textos-questions {
+            flex: 1;
+        }
+        .textos-questions h1 {
+            font-size: 2.3rem;
+            color: #1a3a52;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        .textos-questions p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        .textos-questions a {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 0.9rem 2.8rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, background 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .textos-questions a:hover {
+            transform: translateY(-3px);
+            background: #c0392b;
+        }
+        .questions img {
+            flex: 1;
+            max-width: 100%;
+            height: auto;
+        }
+        .results {
+            background: linear-gradient(135deg, #1a3a52 0%, #2d5a7b 100%);
+            padding: 5rem 0;
+            color: white;
+        }
+        .conten-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .numbers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+        .number {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+        .number h4 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .number p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        .results-text h4 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .results-text p {
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            line-height: 1.7;
+        }
+        .results-text a {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 0.9rem 2.8rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, background 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .results-text a:hover {
+            transform: translateY(-3px);
+            background: #c0392b;
+        }
+        .services {
+            padding: 5rem 0;
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+            background: #e8eaed;
+        }
+        .services img {
+            flex: 1;
+            max-width: 100%;
+            height: auto;
+        }
+        .box-skills {
+            flex: 1;
+        }
+        .box-skills h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #1a3a52;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+        }
+        .box-skills i {
+            color: #e74c3c;
+            font-size: 1.3rem;
+        }
+        footer {
+            background: #1a3a52;
+            color: #ecf0f1;
+            padding: 4rem 0 2rem;
+            border-top: 4px solid #e74c3c;
+        }
+        footer .contenedor1 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            width: 90%;
+        }
+        .partFooter {
+            padding: 1rem;
+        }
+        .partFooter img {
+            height: 60px;
+            width: auto;
+            margin-bottom: 1rem;
+        }
+        .partFooter h4 {
+            margin-bottom: 1rem;
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .partFooter a {
+            display: block;
+            color: #bdc3c7;
+            text-decoration: none;
+            margin-bottom: 0.7rem;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        .partFooter a:hover {
+            color: #e74c3c;
+        }
+        .social-media {
+            display: flex;
+            gap: 1.2rem;
+        }
+        .social-media i {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .social-media i:hover {
+            color: white;
+        }
+        df-messenger {
+            position: fixed !important;
+            right: 2vw;
+            bottom: 2vw;
+            z-index: 1000;
+        }
+        @media (max-width: 768px) {
+            .hamburguer {
+                display: block;
+            }
+            .enlaces-header {
+                display: none;
+            }
+            .textos-header h1 {
+                font-size: 2rem;
+            }
+            .contenido-header {
+                flex-direction: column;
+                padding: 2rem 0;
+            }
+            .conten-results {
+                grid-template-columns: 1fr;
+            }
+            .numbers {
+                grid-template-columns: 1fr 1fr;
+            }
+            .services {
+                flex-direction: column;
+            }
+            .questions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <section class="contenedor nav">
+                <div class="logo">
+                    <img src="img/logo-jordan-alexander.png" alt="">
+                </div>
+                <div class="enlaces-header">
+                    <a href="#">Inicio</a>
+                    <a href="#">Inicio</a>
+                    <a href="#">Inicio</a>
+                    <a href="#">Inicio</a>
+                    <a href="#">Inicio</a>
+                </div>
+                <div class="hamburguer">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </section>
+        </nav>
+        <div class="contenedor">
+            <section class="contenido-header">
+                <section class="textos-header">
+                    <h1>Our creativity is your success</h1>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit, dolorum.</p>
+                    <a href="#">Learn more</a>
+                </section>
+                <img src="img/primeraIlustracion.svg" alt="">
+            </section>
+        </div>
+    </header>
+    <section class="about-us">
+        <div class="contenedor1">
+            <h2 class="titulo">We provide a wide range</h2>
+            <div class="contenedor-articulo">
+                <div class="articulo" data-aos="zoom-in-right">
+                    <i class="fas fa-pen-fancy"></i>
+                    <h3>Graphic design</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus maxime eius quo
+                        consequuntur magni. Quis voluptate repudiandae soluta quod mollitia!</p>
+                    <a href="#">Read more ---></a>
+                </div>
+                <div class="articulo" data-aos="zoom-in-right">
+                    <i class="fas fa-code"></i>
+                    <h3>Web design</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus maxime eius quo
+                        consequuntur magni. Quis voluptate repudiandae soluta quod mollitia!</p>
+                    <a href="#">Read more ---></a>
+                </div>
+                <div class="articulo" data-aos="zoom-in-right">
+                    <i class="fas fa-cog"></i>
+                    <h3>Video production</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus maxime eius quo
+                        consequuntur magni. Quis voluptate repudiandae soluta quod mollitia!</p>
+                    <a href="#">Read more ---></a>
+                </div>
+                <div class="articulo" data-aos="zoom-in-right">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>SEO</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus maxime eius quo
+                        consequuntur magni. Quis voluptate repudiandae soluta quod mollitia!</p>
+                    <a href="#">Read more ---></a>
+                </div>
+                <div class="articulo" data-aos="zoom-in-right">
+                    <i class="fas fa-comments"></i>
+                    <h3>Marketing</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus maxime eius quo
+                        consequuntur magni. Quis voluptate repudiandae soluta quod mollitia!</p>
+                    <a href="#">Read more ---></a>
+                </div>
+                <div class="articulo" data-aos="zoom-in-right">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Inphografics</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus maxime eius quo
+                        consequuntur magni. Quis voluptate repudiandae soluta quod mollitia!</p>
+                    <a href="#">Read more ---></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="questions contenedor">
+        <section class="textos-questions">
+            <h1>Our creativity is your success</h1>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit, dolorum.</p>
+            <a href="#">Learn more</a>
+        </section>
+        <img src="img/segundaIlustracion.svg" alt="" data-aos="zoom-out-up" data-aos-duration="2000">
+    </section>
+
+    <section class="results">
+        <div class="contenedor1 conten-results">
+            <section class="numbers">
+                <div class="number" data-aos="zoom-in-left">
+                    <h4>+8863</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, id.</p>
+                </div>
+                <div class="number" data-aos="zoom-in-left">
+                    <h4>+8863</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, id.</p>
+                </div>
+                <div class="number" data-aos="zoom-in-left">
+                    <h4>+8863</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, id.</p>
+                </div>
+                <div class="number" data-aos="zoom-in-left">
+                    <h4>+8863</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, id.</p>
+                </div>
+            </section>
+            <section class="results-text">
+                <h4>Lorem ipsum dolor sit amet.</h4>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet sequi nihil unde.</p>
+                <a href="#">Ingrese aquí</a>
+            </section>
+        </div>
+    </section>
+
+    <section class="contenedor1 services">
+        <img src="img/terceraIlustracion.svg" alt="">
+        <div class="box-skills">
+            <h4><i class="far fa-check-circle"></i> Web design</h4>
+            <h4><i class="far fa-check-circle"></i> Web development</h4>
+            <h4><i class="far fa-check-circle"></i> SEO</h4>
+            <h4><i class="far fa-check-circle"></i> Marketing</h4>
+            <h4><i class="far fa-check-circle"></i> Web support</h4>
+        </div>
+    </section>
+
+    <footer>
+        <div class="contenedor1">
+            <div class="partFooter">
+                <img src="img/logo-jordan-alexander.png" alt="">
+            </div>
+            <div class="partFooter">
+                <h4>Servicios</h4>
+                <a href="#">Services 1</a>
+                <a href="#">Services 2</a>
+                <a href="#">Services 3</a>
+            </div>
+            <div class="partFooter">
+                <h4>Acerca de</h4>
+                <a href="#">About 1</a>
+                <a href="#">About 2</a>
+                <a href="#">About 3</a>
+            </div>
+            <div class="partFooter">
+                <h4>Redes sociales</h4>
+                <div class="social-media">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        df-messenger {
+            --df-messenger-button-titlebar-color: linear-gradient(135deg, rgb(28, 68, 100) 0%, rgb(38, 78, 110) 100%) 0% 0% / 200% 200%;
+            /*--df-messenger-chat-background-color: rgb(255, 255, 255);*/
+            --df-messenger-send-icon: white;
+            --df-messenger-chip-color-text: red;
+            /* chat-icon="https://firebasestorage.googleapis.com/v0/b/chatbotoge.appspot.com/o/ogechatbot.png?alt=media&token=d3846f07-18d8-49f6-a29b-0a84ba64674d" */
+            /* chat-icon="https://firebasestorage.googleapis.com/v0/b/chatbotoge.appspot.com/o/astrobot.gif?alt=media&token=56609aa7-1187-4a9c-a660-4e0201402768" */
+            }  
+    </style>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://kit.fontawesome.com/c15b744a04.js" crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/scriptmodelbotogeunasam.js"></script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+        chat-icon="https://firebasestorage.googleapis.com/v0/b/chatbotoge.appspot.com/o/ogechatbot.png?alt=media&token=d3846f07-18d8-49f6-a29b-0a84ba64674d"
+        intent="WELCOME"
+        chat-title="OGEBOT"
+        agent-id="8633a84e-531e-49c2-a0ff-dca0b4bc896c"
+        language-code="es"
+    ></df-messenger>
+</body>
+</html>
