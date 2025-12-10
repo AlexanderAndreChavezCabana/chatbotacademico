@@ -173,7 +173,7 @@ Pregunta: {query_text}"""
                     
                     rich_content_items.append(item)
                 
-                response_text = f"📰 Encontré {len(noticias)} noticias de UNASAM"
+                response_text = f"📰 Estas son las {len(noticias)} noticias recientes de la UNASAM, dale click para obtener más información 👇"
                 print(f"✓✓✓ Noticias obtenidas: {len(noticias)}")
             else:
                 response_text = "No pude obtener las noticias en este momento"
