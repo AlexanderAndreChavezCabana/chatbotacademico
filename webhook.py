@@ -3,6 +3,8 @@ from fastapi.responses import JSONResponse
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+import requests
+from bs4 import BeautifulSoup
 
 load_dotenv()
 
@@ -12,6 +14,52 @@ if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 app = FastAPI(title="ChatBot OGE Webhook")
+
+def scraper_noticias():
+    """Extrae noticias de UNASAM"""
+    try:
+        url = "https://unasam.edu.pe"
+        response = requests.get(url, timeout=5)
+        response.encoding = 'utf-8'
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        noticias = []
+        articulos = soup.find_all('article')[:2]  # Solo 2 noticias
+        
+        for articulo in articulos:
+            try:
+                titulo_elem = articulo.find('h4', class_='line-height-3')
+                if not titulo_elem:
+                    continue
+                    
+                titulo = titulo_elem.get_text(strip=True)
+                img_elem = articulo.find('img')
+                imagen_url = img_elem.get('src') if img_elem else None
+                if imagen_url and not imagen_url.startswith('http'):
+                    imagen_url = url + "/" + imagen_url
+                
+                fecha_elem = articulo.find('span', class_='day')
+                mes_elem = articulo.find('span', class_='month')
+                fecha = f"{fecha_elem.get_text(strip=True)} {mes_elem.get_text(strip=True)}" if fecha_elem and mes_elem else ""
+                
+                link_elem = articulo.find('a', href=True)
+                enlace = link_elem.get('href') if link_elem else None
+                if enlace and not enlace.startswith('http'):
+                    enlace = url + "/" + enlace
+                
+                noticias.append({
+                    "titulo": titulo,
+                    "imagen": imagen_url,
+                    "fecha": fecha,
+                    "enlace": enlace
+                })
+            except:
+                continue
+        
+        return noticias
+    except Exception as e:
+        print(f"Error scrapeando: {str(e)}")
+        return []
 
 @app.get("/health")
 async def health():
@@ -96,25 +144,60 @@ Pregunta: {query_text}"""
             })
         
         # ===== INTENT: noticias =====
-        elif intent_name == "noticias":
-            if GEMINI_API_KEY:
-                model = genai.GenerativeModel("gemini-2.5-flash")
-                prompt = f"Eres un asistente de noticias. Responde: {query_text}"
-                response = model.generate_content(prompt)
-                response_text = response.text
-                print(f"✓ Respuesta Gemini: {response_text}")
+        elif intent_name == "faqs_categorias_noticias_unasam":
+            print("→ Entrando en intent noticias")
+            noticias = scraper_noticias()
+            
+            if noticias:
+                # Crear respuesta enriquecida con formato Dialogflow
+                rich_content_items = []
+                
+                for noticia in noticias:
+                    item = []
+                    
+                    # Imagen
+                    if noticia.get("imagen"):
+                        item.append({
+                            "type": "image",
+                            "rawUrl": noticia.get("imagen"),
+                            "accessibilityText": noticia.get("titulo", "")
+                        })
+                    
+                    # Información con título y fecha
+                    item.append({
+                        "type": "info",
+                        "title": noticia.get("titulo", ""),
+                        "subtitle": noticia.get("fecha", ""),
+                        "actionLink": noticia.get("enlace", "#")
+                    })
+                    
+                    # Botón de acción
+                    if noticia.get("enlace"):
+                        item.append({
+                            "type": "chips",
+                            "options": [
+                                {
+                                    "text": "Leer más",
+                                    "link": noticia.get("enlace")
+                                }
+                            ]
+                        })
+                    
+                    rich_content_items.append(item)
+                
+                response_text = f"📰 Encontré {len(noticias)} noticias de UNASAM"
+                print(f"✓✓✓ Noticias obtenidas: {len(noticias)}")
             else:
-                response_text = "Aquí están las noticias"
+                response_text = "No pude obtener las noticias en este momento"
+                rich_content_items = []
             
             return JSONResponse({
                 "fulfillmentText": response_text,
-                "fulfillmentMessages": [
-                    {
-                        "text": {
-                            "text": [response_text]
-                        }
+                "fulfillmentMessages": [{
+                    "payload": {
+                        "richContent": rich_content_items
                     }
-                ]
+                }]
             })
         
         # Respuesta por defecto si no coincide ningún intent
