@@ -24,7 +24,7 @@ def scraper_noticias():
         soup = BeautifulSoup(response.content, 'html.parser')
         
         noticias = []
-        articulos = soup.find_all('article')[:2]  # Solo 2 noticias
+        articulos = soup.find_all('article')[:3]  # Solo 2 noticias
         
         for articulo in articulos:
             try:
@@ -171,18 +171,6 @@ Pregunta: {query_text}"""
                         "actionLink": noticia.get("enlace", "#")
                     })
                     
-                    # Botón de acción
-                    if noticia.get("enlace"):
-                        item.append({
-                            "type": "chips",
-                            "options": [
-                                {
-                                    "text": "Leer más",
-                                    "link": noticia.get("enlace")
-                                }
-                            ]
-                        })
-                    
                     rich_content_items.append(item)
                 
                 response_text = f"📰 Encontré {len(noticias)} noticias de UNASAM"
@@ -193,11 +181,36 @@ Pregunta: {query_text}"""
             
             return JSONResponse({
                 "fulfillmentText": response_text,
-                "fulfillmentMessages": [{
-                    "payload": {
-                        "richContent": rich_content_items
+                "fulfillmentMessages": [
+                    {
+                        "text": {
+                            "text": [response_text]
+                        }
+                    },
+                    {
+                        "payload": {
+                            "richContent": rich_content_items
+                        }
+                    },
+                    {
+                        "text": {
+                            "text": ["¿Deseas realizar más consultas? 🤔"]
+                        }
+                    },
+                    {
+                        "payload": {
+                            "richContent": [[
+                                {
+                                    "type": "chips",
+                                    "options": [
+                                        {"text": "Si"},
+                                        {"text": "No"}
+                                    ]
+                                }
+                            ]]
+                        }
                     }
-                }]
+                ]
             })
         
         # Respuesta por defecto si no coincide ningún intent
