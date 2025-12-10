@@ -105,7 +105,7 @@ Pregunta: {query_text}"""
                     print(f"✓✓✓ RESPUESTA GENERADA: {response_text}")
                 except Exception as e:
                     print(f"❌ ERROR generando con Gemini: {str(e)}")
-                    response_text = f"Error: {str(e)}"
+                    response_text = "No pude procesar tu pregunta en este momento"
             else:
                 response_text = f"Respuesta webhook: {query_text}"
                 print(f"⚠ No hay API key, usando respuesta por defecto")
@@ -123,13 +123,17 @@ Pregunta: {query_text}"""
         
         # ===== INTENT: saludo =====
         elif intent_name == "saludo":
-            if GEMINI_API_KEY:
-                model = genai.GenerativeModel("gemini-2.5-flash")
-                prompt = f"Eres un asistente amable. Saluda y responde: {query_text}"
-                response = model.generate_content(prompt)
-                response_text = response.text
-                print(f"✓ Respuesta Gemini: {response_text}")
-            else:
+            try:
+                if GEMINI_API_KEY:
+                    model = genai.GenerativeModel("gemini-2.5-flash")
+                    prompt = f"Eres un asistente amable. Saluda y responde: {query_text}"
+                    response = model.generate_content(prompt)
+                    response_text = response.text
+                    print(f"✓ Respuesta Gemini: {response_text}")
+                else:
+                    response_text = "Hola, ¿cómo te puedo ayudar?"
+            except Exception as e:
+                print(f"ERROR en saludo: {str(e)}")
                 response_text = "Hola, ¿cómo te puedo ayudar?"
             
             return JSONResponse({
