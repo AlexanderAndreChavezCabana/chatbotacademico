@@ -87,7 +87,7 @@ async def webhook(request: Request):
         print(f"DEBUG - Intent recibido: '{intent_name}'")
         print(f"DEBUG - Query: '{query_text}'")
         
-        response_text = "No entendí tu pregunta"
+        # response_text = "No entendí tu pregunta"
         
         # ===== INTENT: webhook =====
         if intent_name == "ProbandoWebHook":
