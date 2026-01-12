@@ -24,7 +24,7 @@ def scraper_noticias():
         soup = BeautifulSoup(response.content, 'html.parser')
         
         noticias = []
-        articulos = soup.find_all('article')[:3]  # Solo 2 noticias
+        articulos = soup.find_all('article')[:3]  # Solo 3 noticias
         
         for articulo in articulos:
             try:
