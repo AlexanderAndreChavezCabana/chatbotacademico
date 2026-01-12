@@ -8,7 +8,6 @@ function supportsConstructableStylesheets(targetShadowRoot) {
 }
 
 function makeSheet(cssText) {
-  // Crea un CSSStyleSheet (constructable) o devuelve null si no es soportado
   try {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(cssText);
@@ -28,7 +27,6 @@ function applyStyles(shadowRoot, cssTexts) {
       .filter(Boolean);
     shadowRoot.adoptedStyleSheets = [...shadowRoot.adoptedStyleSheets, ...newsheets];
   } else {
-    // Fallback: inyectar <style>
     const style = document.createElement("style");
     style.textContent = cssTexts.join("\n");
     shadowRoot.appendChild(style);
@@ -67,26 +65,145 @@ function customizeDialogflow() {
   const r8 = r4.shadowRoot.querySelector(".input-container .input-box-wrapper");
   const r9 = r4.shadowRoot.querySelector(".input-container .input-box-wrapper input");
 
-  // ===== Altura / responsive del chat-wrapper =====
+  // ===== ESTILOS MEJORADOS Y RESPONSIVE =====
+  
+  // 1. Altura responsive del chat
   {
     const style = document.createElement("style");
-    const nonMobileMinWidth = 501;
-    style.textContent =
-      `@media screen and (min-width:${nonMobileMinWidth}px){ .chat-wrapper { max-height:80% !important; } }`;
-    r2.shadowRoot.appendChild(style);
-  }
-
-  // ===== Estilos: Titlebar (r3), sendIcon (r4), message list (r5) =====
+    style.textContent = `
+      .chat-wrapper { 
+        max-height: 85vh !important;
+        height: 600px !important;
+     2. Estilos del titlebar - Barra de título con gradiente
   applyStyles(
     r3.shadowRoot,
     [`
       .title-wrapper {
         background: linear-gradient(135deg, rgb(28, 68, 100) 0%, rgb(38, 78, 110) 100%) !important;
-        background-size: 200% 200%;
-        box-shadow: rgba(0, 0, 0, 0.5) 0 0 10px;
+        background-size: 200% 200% !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
         color: #fff !important;
-        font-size: 22px !important;
-        font-weight: bold;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.4) !important;
+        padding: 18px 16px !important;
+        border-radius: 12px 12px 0 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 12px !important;
+      }
+      .title {
+        font-family: 'Roboto', sans-serif !important;
+        letter-spacing: 0.5px !important;
+      }
+    `]
+  );
+
+  // 3. Estilos del botón de envío
+  applyStyles(
+    r4.shadowRoot,
+    [
+      `#sendIcon { 
+        background: linear-gradient(135deg, rgb(37,71,106) 0%, rgb(20,105,126) 100%) !important; 
+        border-radius: 4px !important; 
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+        transition: all 0.3s ease !important;
+        padding: 8px !important;
+      }`,
+      `#sendIcon:hover { 
+        fill: white !important; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        transform: scale(1.05) !important;
+      }`,
+      `.input-box-wrapper {
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 24px !important;
+        transition: all 0.3s ease !important;
+      }`,
+      `.input-box-wrapper.valid {
+        border-color: rgb(28, 68, 100) !important;
+      }`,
+      `.input-box-wrapper input {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+      }`
+    ]
+  );5. Logo animado en el titlebar
+  if (r6) {
+    const imagen_bot = document.createElement("img");
+    imagen_bot.src = "https://firebasestorage.googleapis.com/v0/b/chatbotoge.appspot.com/o/ogechatbot.png?alt=media&token=d3846f07-18d8-49f6-a29b-0a84ba64674d";
+    imagen_bot.width = 45;
+    imagen_bot.height = 45;
+    imagen_bot.style.cssText = "transition: all 0.5s ease; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.2);";
+    r6.insertAdjacentElement("beforebegin", imagen_bot);
+
+    let angle = 0;
+    let direction = 1;
+
+    function rotateImage() {
+      angle += direction * 0.008;
+      if (angle > 0.15 || angle < -0.15) direction *= -1;
+      imagen_bot.style.transform = `rotate(${angle}rad)`;
+      requestAnimationFrame(rotateImage);
+    }
+    rotateImage();
+
+    imagen_bot.addEventListener("mouseover", () => {
+      imagen_bot.style.transform = `scale(1.15) rotate(${angle}rad)`;
+      imagen_bot.style.boxShadow = "0 4px 16px rgba(28, 68, 100, 0.4)";
+    });
+    imagen_bot.addEventListener("mouseout", () => {
+      imagen_bot.style.transform = `scale(1) rotate(${angle}rad)`;
+      imagen_bot.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)"
+        padding: 12px 16px !important;
+     6. Animaciones del widgetIcon (botón flotante)
+  applyStyles(
+    r1.shadowRoot,
+    [`
+      @keyframes blink {
+        0%, 100% { 
+          box-shadow: 0 0 20px rgba(28,68,100, 0.6), 
+                      0 0 40px rgba(28,68,100, 0.4), 
+                      0 0 60px rgba(28,68,100, 0.2);
+        }
+        50% { 
+          box-shadow: 0 0 10px rgba(28,68,100, 0.4), 
+                      0 0 20px rgba(28,68,100, 0.2), 
+                      0 0 30px rgba(28,68,100, 0.1);
+        }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) rotateY(0deg); }
+        25% { transform: translateY(-5px) rotateY(90deg); }
+        50% { transform: translateY(0px) rotateY(180deg); }
+        75% { transform: translateY(-5px) rotateY(270deg); }
+      }
+      button#widgetIcon {
+        background: linear-gradient(135deg, rgb(28,68,100) 0%, rgb(38,78,110) 100%) !important;
+        border: none !important;
+        box-shadow: 0 8px 24px rgba(28,68,100, 0.4) !important;
+        animation: blink 4s ease-in-out infinite, float 20s linear infinite !important;
+        width: 64px !important;
+        height: 64px !important;
+        transition: all 0.3s ease !important;
+      }
+      button#widgetIcon:hover {
+        transform: scale(1.1) !important;
+        box-shadow: 0 12px 32px rgba(28,68,100, 0.6) !important;
+      }
+      button#widgetIcon img {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)) !important
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+      }`,
+      `.chip:hover {
+        background: rgb(28, 68, 100) !important;
+        color: white !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 8px rgba(28, 68, 100, 0.3) !important;
+     
         text-align: center;
         text-shadow: rgba(0,0,0,0.5) 2px 2px;
       }
@@ -140,28 +257,160 @@ function customizeDialogflow() {
   }
 
   // ===== Animaciones del widgetIcon (burbuja) en el root (r1) =====
-  applyStyles(
-    r1.shadowRoot,
-    [`
-      @keyframes blink {
-        0% { box-shadow: rgba(28,68,100, .35) 0 0 9px, rgba(28,68,100,.40) 0 0 10px, rgba(28,68,100,.45) 0 0 9px; }
-        50% { box-shadow: rgba(28,68,100, .20) 0 0 3px, rgba(28,68,100,.20) 0 0 3px, rgba(28,68,100,.20) 0 0 3px; }
-        100% { box-shadow: rgba(28,68,100, .35) 0 0 9px, rgba(28,68,100,.40) 0 0 9px, rgba(28,68,100,.45) 0 0 9px; }
-      }
-      @keyframes rotateY {
-        0%, 40% { transform: rotateY(0deg); }
-        60%, 100% { transform: rotateY(180deg); }
-      }
-      button#widgetIcon {
-        background: linear-gradient(135deg, rgb(28,68,100) 0%, rgb(38,78,110) 100%) 0% 0% / 200% 200%;
-        border: none;
-        box-shadow: rgba(28,68,100,.35) 0 0 9px, rgba(28,68,100,.4) 0 0 9px, rgba(28,68,100,.45) 0 0 9px;
-        animation: blink 5s linear infinite, rotateY 50s linear infinite;
-      }
-    `]
-  );
+  app7. Footer personalizado: "Chat online OGE-UNASAM" + micrófono
+  if (r7 && r8 && r9) {
+    const div_microphone = document.createElement("div");
+    div_microphone.style.cssText = `
+      background: linear-gradient(180deg, #f0f2f7 0%, #e8eaed 100%);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid #d0d0d0;
+      font-size: 13px;
+      color: #555;
+      font-weight: 500;
+    `;
+    r7.insertAdjacentElement("afterend", div_microphone);
 
-  // ===== Zona inferior: "Chat online" + enlace + botón micrófono =====
+    const span_text_bot = document.createElement("span");
+    span_text_bot.textContent = "Chat online";
+    span_text_bot.style.cssText = "color: #666; font-weight: 600;";
+
+    const enlace_oge = document.createElement("a");
+    enlace_oge.href = "https://www.facebook.com/ogeunasamoficial/";
+    enlace_oge.target = "_blank";
+    enlace_oge.textContent = "OGE-UNASAM";
+    enlace_oge.style.cssText = `
+      text-decoration: none;
+      color: rgb(28, 68, 100 mejorado
+    btn_microphone.addEventListener("click", function () {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("⚠️ Tu navegador no soporta reconocimiento de voz. Prueba con Chrome o Edge.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "es-PE";
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      recognition.addEventListener("result", e => {
+        const transcript = Array.from(e.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join("");
+
+        r9.value = transcript;
+        r8.className = "input-box-wrapper valid";
+        r9.focus();
+      });
+
+      recognition.start();
+      
+      // Efecto visual al grabar
+      btn_microphone.style.cssText = `
+        display: block;
+        height: 42px;
+        width: 42px;
+        border-radius: 50%;
+        border: 2px solid rgb(20, 105, 126);
+        margin: 0;
+        background: linear-gradient(135deg, rgba(37,71,106,0.8) 0%, rgba(20,105,126,0.8) 100%);
+        cursor: pointer;
+        animation: pulse 1s infinite;
+        box-shadow: 0 4px 16px rgba(20, 105, 126, 0.5);
+      `;
+
+      // Añadir animación de pulso
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+     8. TTS: Ícono de audio mejorado por cada mensaje del bot
+  (function attachTTSForBotMessages() {
+    const sr = r5.shadowRoot;
+    if (!sr) return;
+
+    function addIconToMessage(msgEl) {
+      if (!msgEl || !msgEl.classList || !msgEl.classList.contains("bot-message")) return;
+      if (msgEl.dataset.ttsAttached === "1") return;
+
+      const audioIcon = document.createElement("img");
+      audioIcon.src = "https://firebasestorage.googleapis.com/v0/b/chatbotoge.appspot.com/o/voz%2Fbot_voz.png?alt=media&token=80f770a9-3bc5-4a45-814e-f1d3a0b42463";
+      audioIcon.width = 20;
+      audioIcon.height = 20;
+      audioIcon.style.cssText = `
+        cursor: pointer;
+        margin-left: 8px;
+        vertical-align: middle;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+      `;
+      audioIcon.title = "🔊 Escuchar mensaje";
+
+      audioIcon.addEventListener("mouseover", () => {
+        audioIcon.style.opacity = "1";
+        audioIcon.style.transform = "scale(1.2)";
+      });
+
+      audioIcon.addEventListener("mouseout", () => {
+        audioIcon.style.opacity = "0.7";
+        audioIcon.style.transform = "scale(1)";
+      });
+
+      audioIcon.addEventListener("click", () => {
+        const messageText = (msgEl.textContent || "").trim();
+        if (!messageText) return;
+        
+        // Detener cualquier lectura previa
+        window.speechSynthesis.cancel();
+        
+        const utter = new SpeechSynthesisUtterance(messageText);
+        utter.lang = "es-PE";
+        utter.rate = 1.0;
+        utter.pitch = 1.0;
+        utter.volume = 1.0;
+        
+        // Efecto visual mientras habla
+        audioIcon.style.animation = "pulse 0.5s infinite";
+        
+        utter.onend = () => {
+          audioIcon.style.animation = "none";
+        };
+        
+        window.speechSynthesis.speak(utter);
+      });
+
+      msgEl.appendChild(audioIcon);
+      msgEl.dataset.ttsAttached = "1";
+    }
+
+    // Procesar mensajes existentes
+    sr.querySelectorAll(".message.bot-message").forEach(addIconToMessage);
+
+    // Observar nuevos mensajes
+    const observer = new MutationObserver(muts => {
+      for (const m of muts) {
+        m.addedNodes.forEach(node => {
+          if (!(node instanceof Element)) return;
+
+          if (node.classList && node.classList.contains("bot-message")) {
+            addIconToMessage(node);
+          }
+
+          background: white;
+          border: 2px solid rgb(28, 68, 100);
+          margin: 0;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        `cssText = "padding: 0; vertical-align: middle;ce + botón micrófono =====
   if (r7 && r8 && r9) {
     const div_microphone = document.createElement("div");
     div_microphone.style = "background: rgb(240,242,247); margin: 0 auto; display:flex; justify-content:center; align-items:center; gap:8px;";
