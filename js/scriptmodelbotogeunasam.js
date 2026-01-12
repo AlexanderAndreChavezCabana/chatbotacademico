@@ -105,9 +105,38 @@ function customizeDialogflow() {
   applyStyles(
     r5.shadowRoot,
     [
-      `#messageList { background: white; }`,
-      `#messageList .message.user-message { color: white; background: linear-gradient(135deg, rgb(37,71,106), rgb(20,105,126)) !important; }`,
-      `#messageList .message.bot-message { color: rgb(6,19,43); background: rgb(240,242,247); }`
+      `#messageList { 
+        background: white; 
+        padding: 12px; 
+      }`,
+      `#messageList .message.user-message { 
+        color: white !important; 
+        background: linear-gradient(135deg, rgb(37,71,106), rgb(20,105,126)) !important;
+        border-radius: 18px 18px 4px 18px !important;
+        padding: 10px 14px !important;
+        max-width: 75% !important;
+        margin-left: auto !important;
+        margin-right: 8px !important;
+        text-align: left !important;
+        word-wrap: break-word !important;
+        display: block !important;
+        float: right !important;
+        clear: both !important;
+      }`,
+      `#messageList .message.bot-message { 
+        color: rgb(6,19,43) !important; 
+        background: rgb(240,242,247) !important;
+        border-radius: 18px 18px 18px 4px !important;
+        padding: 10px 14px !important;
+        max-width: 80% !important;
+        margin-right: auto !important;
+        margin-left: 8px !important;
+        text-align: left !important;
+        word-wrap: break-word !important;
+        display: block !important;
+        float: left !important;
+        clear: both !important;
+      }`
     ]
   );
 
