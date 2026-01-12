@@ -35,24 +35,32 @@ function applyStyles(shadowRoot, cssTexts) {
   }
 }
 
-// ===== Lógica principal tras carga del DF Messenger =====
-window.addEventListener("dfMessengerLoaded", function () {
-  console.log("Dialogflow Messenger cargado ✅");
+// ===== Función principal de personalización =====
+function customizeDialogflow() {
+  console.log("🔧 Iniciando personalización del chatbot...");
 
   const r1 = document.querySelector("df-messenger");
-  if (!r1 || !r1.shadowRoot) return;
+  if (!r1 || !r1.shadowRoot) {
+    console.warn("⚠️ df-messenger no encontrado, reintentando...");
+    return false;
+  }
 
   const r2 = r1.shadowRoot.querySelector("df-messenger-chat");
-  if (!r2 || !r2.shadowRoot) return;
+  if (!r2 || !r2.shadowRoot) {
+    console.warn("⚠️ df-messenger-chat no encontrado, reintentando...");
+    return false;
+  }
 
   const r3 = r2.shadowRoot.querySelector("df-messenger-titlebar");
   const r4 = r2.shadowRoot.querySelector("df-messenger-user-input");
   const r5 = r2.shadowRoot.querySelector("df-message-list");
 
   if (!r3 || !r3.shadowRoot || !r4 || !r4.shadowRoot || !r5 || !r5.shadowRoot) {
-    console.warn("Elementos internos no disponibles todavía.");
-    return;
+    console.warn("⚠️ Elementos internos no disponibles, reintentando...");
+    return false;
   }
+
+  console.log("✅ Todos los elementos encontrados, aplicando estilos...");
 
   const r6 = r3.shadowRoot.querySelector("#dfTitlebar");
   const r7 = r4.shadowRoot.querySelector(".input-container");
@@ -275,4 +283,47 @@ window.addEventListener("dfMessengerLoaded", function () {
 
     observer.observe(sr, { childList: true, subtree: true });
   })();
-});
+
+  console.log("🎉 Personalización completada exitosamente!");
+  return true;
+}
+
+// ===== Inicializar con múltiples intentos =====
+let intentos = 0;
+const maxIntentos = 20;
+
+function intentarPersonalizar() {
+  intentos++;
+  console.log(`🔄 Intento ${intentos}/${maxIntentos}`);
+  
+  if (customizeDialogflow()) {
+    console.log("✅ Personalización aplicada correctamente");
+    return;
+  }
+  
+  if (intentos < maxIntentos) {
+    setTimeout(intentarPersonalizar, 300);
+  } else {
+    console.error("❌ No se pudo personalizar el chatbot después de " + maxIntentos + " intentos");
+  }
+}
+
+// Escuchar el evento dfMessengerLoaded
+if (window.dfMessengerLoaded) {
+  console.log("🚀 dfMessenger ya estaba cargado, personalizando ahora...");
+  intentarPersonalizar();
+} else {
+  window.addEventListener("dfMessengerLoaded", function () {
+    console.log("🚀 Evento dfMessengerLoaded recibido");
+    intentarPersonalizar();
+  });
+}
+
+// Fallback: Intentar después de que el DOM esté listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(intentarPersonalizar, 1000);
+  });
+} else {
+  setTimeout(intentarPersonalizar, 1000);
+}

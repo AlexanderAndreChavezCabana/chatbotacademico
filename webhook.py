@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 load_dotenv()
 
-# Configurar Gemini
+# Configuración LLM Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
@@ -235,6 +235,10 @@ Pregunta: {query_text}"""
 
 if __name__ == "__main__":
     import uvicorn
+    # Para HTTPS local, descomenta las siguientes líneas y genera certificados
+    # uvicorn.run(app, host="0.0.0.0", port=8000, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
+    
+    # HTTP simple (recomendado para desarrollo local o usar con ngrok)
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
