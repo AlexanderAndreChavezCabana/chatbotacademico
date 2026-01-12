@@ -248,11 +248,26 @@ function customizeDialogflow() {
       audioIcon.title = "Escuchar mensaje";
 
       audioIcon.addEventListener("click", () => {
-        const messageText = (msgEl.textContent || "").trim();
+        let messageText = (msgEl.textContent || "").trim();
         if (!messageText) return;
+        
+        // Eliminar emojis y emoticones
+        messageText = messageText.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]/gu, '');
+        // Eliminar emoticones de texto :) :( etc
+        messageText = messageText.replace(/[:\-;][)(DPO]|<3|:\/|:\||8\)/g, '');
+        // Eliminar menciones de "agente"
+        messageText = messageText.replace(/agente\s*\w*/gi, '');
+        messageText = messageText.replace(/agent\s*\w*/gi, '');
+        // Limpiar múltiples espacios
+        messageText = messageText.replace(/\s+/g, ' ').trim();
+        
+        if (!messageText) return;
+        
         const utter = new SpeechSynthesisUtterance(messageText);
-        utter.lang = "es-PE";
-        window.speechSynthesis.cancel(); // cortar cualquier lectura previa
+        utter.lang = "es-ES";
+        utter.rate = 0.95;
+        utter.pitch = 1.1;
+        window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utter);
       });
 
