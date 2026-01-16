@@ -107,13 +107,21 @@ async def webhook(request: Request):
                 "Pagos"
             ]
             import random
+            advertencias = [
+                    "Si tu pregunta no es académica, lamentablemente no podré ayudarte.",
+                    "Solo puedo responder dudas académicas, disculpa si no puedo atender otros temas.",
+                    "Si tu consulta no está relacionada a trámites o servicios académicos, por favor intenta con otra pregunta.",
+                    "No puedo responder temas que no sean académicos, gracias por tu comprensión.",
+                    "Disculpa, solo atiendo temas académicos y de la OGE."
+                ]
+            advertencia = random.choice(advertencias)
             temas_aleatorios = random.sample(temas_oge, 4)
             temas_str = ', '.join(temas_aleatorios)
             if GEMINI_API_KEY:
                 try:
                     print(f"→ Inicializando modelo Gemini...")
                     model = genai.GenerativeModel("gemini-2.5-flash")
-                    prompt = f"""Solo puedes responder preguntas académicas relacionadas a la OGE UNASAM. Si la pregunta no es académica, responde que solo atiendes temas académicos.
+                    prompt = f"""Solo puedes responder preguntas académicas relacionadas a la OGE UNASAM. {advertencia}
 Pregunta: {query_text}"""
                     print(f"→ Enviando prompt a Gemini...")
                     response = model.generate_content(prompt)
