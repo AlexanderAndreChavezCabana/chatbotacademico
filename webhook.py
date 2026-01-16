@@ -88,7 +88,56 @@ async def webhook(request: Request):
         print(f"DEBUG - Query: '{query_text}'")
         
         # response_text = "No entendí tu pregunta"
-        
+        # ===== INTENT: webhook =====
+        if intent_name == "Default Fallback Intent":
+            print(f"→ Entrando en intent Default Fallback Intent personalizado")
+            print(f"→ GEMINI_API_KEY existe: {bool(GEMINI_API_KEY)}")
+            temas_oge = [
+                "Credenciales",
+                "Prematrícula",
+                "Matrícula",
+                "Certificado de estudio",
+                "Reserva de matrícula",
+                "Retiro de materia",
+                "Retiro de semestre",
+                "Riesgo académico",
+                "Cronograma",
+                "Guía del estudiante",
+                "Tutoriales",
+                "Pagos"
+            ]
+            import random
+            temas_aleatorios = random.sample(temas_oge, 4)
+            temas_str = ', '.join(temas_aleatorios)
+            if GEMINI_API_KEY:
+                try:
+                    print(f"→ Inicializando modelo Gemini...")
+                    model = genai.GenerativeModel("gemini-2.5-flash")
+                    prompt = f"""Solo puedes responder preguntas académicas relacionadas a la OGE UNASAM. Si la pregunta no es académica, responde que solo atiendes temas académicos.
+Pregunta: {query_text}"""
+                    print(f"→ Enviando prompt a Gemini...")
+                    response = model.generate_content(prompt)
+                    response_text = response.text
+                    print(f"✓✓✓ RESPUESTA GENERADA: {response_text}")
+                except Exception as e:
+                    print(f"❌ ERROR generando con Gemini: {str(e)}")
+                    response_text = "No pude procesar tu pregunta en este momento"
+            else:
+                response_text = f"Respuesta webhook: {query_text}"
+                print(f"⚠ No hay API key, usando respuesta por defecto")
+            # Agregar los temas sugeridos a la respuesta
+            response_text += f"\n\nAlgunos temas que puedo responder: {temas_str}"
+            return JSONResponse({
+                "fulfillmentText": response_text,
+                "fulfillmentMessages": [
+                    {
+                        "text": {
+                            "text": [response_text]
+                        }
+                    }
+                ]
+            })
+    
         # ===== INTENT: webhook =====
         if intent_name == "ProbandoWebHook":
             print(f"→ Entrando en intent ProbandoWebHook")
