@@ -9,3 +9,5 @@ NGROK_AUTHTOKEN=tu_ngrok_token_aqui
 # Configuración de Dialogflow
 DIALOGFLOW_PROJECT_ID=tu_project_id
 DIALOGFLOW_AGENT_ID=tu_agent_id
+
+OPENAI_API_KEY=tu_openai_api_key_aqui
