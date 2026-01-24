@@ -332,7 +332,6 @@ function customizeDialogflow() {
   return true;
 }
 
-// ===== Inicializar con múltiples intentos =====
 let intentos = 0;
 const maxIntentos = 20;
 
@@ -363,7 +362,6 @@ if (window.dfMessengerLoaded) {
   });
 }
 
-// Fallback: Intentar después de que el DOM esté listo
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     setTimeout(intentarPersonalizar, 1000);
